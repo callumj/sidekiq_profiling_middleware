@@ -15,9 +15,14 @@ Two middleware classes are available:
 Sidekiq.configure_server do |config|
   ....
   config.server_middleware do |chain|
-    chain.add SidekiqProfilingMiddleware::StackProf, only: [ThisReallySlowWorker].set, s3_bucket: "cj-profiling"
+    chain.add(
+      SidekiqProfilingMiddleware::StackProf,
+      only: [ThisReallySlowWorker].to_set,
+      s3_bucket: "cj-profiling",
+      output_prefix: "stackprof/#{ENV["GIT_SHA]}_",
+    )
     # OR
-    chain.add SidekiqProfilingMiddleware::StackProf, output_prefix: "tmp/#{Rails.env}_#{ENV["GIT_SHA"]}"
+    chain.add SidekiqProfilingMiddleware::StackProf, output_prefix: "tmp/#{Rails.env}_#{ENV["GIT_SHA"]}_"
   end
 end
 ```
