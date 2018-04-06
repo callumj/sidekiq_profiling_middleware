@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 Gem::Specification.new do |s|
   s.name        = "sidekiq_profiling_middleware"
-  s.version     = "0.0.2"
+  s.version     = "0.0.3"
   s.date        = "2010-04-28"
   s.summary     = "StackProf and MemoryProfiler middleware for Sidekiq"
-  s.description = "StackProf and MemoryProfiler middleware for Sidekiq"
-  s.authors     = ["CallumJones"]
+  s.authors     = ["Callum Jones"]
   s.email       = "contact@callumj.com"
   s.files       = %w(
     lib/sidekiq_profiling_middleware/memory_profiler.rb
+    lib/sidekiq_profiling_middleware/s3.rb
     lib/sidekiq_profiling_middleware/stack_prof.rb
     lib/sidekiq_profiling_middleware/util.rb
   )
