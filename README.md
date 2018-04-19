@@ -12,6 +12,8 @@ Two middleware classes are available:
 (You should only use one at a time, otherwise that will be quite confusing)
 
 ```ruby
+require "sidekiq_profiling_middleware/stack_prof"
+
 Sidekiq.configure_server do |config|
   ....
   config.server_middleware do |chain|
