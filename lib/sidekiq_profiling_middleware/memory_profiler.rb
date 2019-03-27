@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "sidekiq_profiling_middleware/util"
 require "memory_profiler"
 
@@ -13,8 +14,14 @@ module SidekiqProfilingMiddleware
     end
 
     def call(worker, msg, queue)
+      job_class_name = worker.class
+
+      if job_class_name == ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper
+        job_class_name = msg["wrapped"].constantize
+      end
+
       # bail out if whitelist doesn't match
-      if only && !only.include?(worker.class)
+      if only && !only.include?(job_class_name)
         return yield
       end
 
@@ -22,7 +29,7 @@ module SidekiqProfilingMiddleware
         yield
       end
 
-      out = "#{output_prefix}#{Util.worker_names[worker.class]}_#{Util.current_epoch_ms}.txt"
+      out = "#{output_prefix}#{Util.worker_names[job_class_name]}_#{Util.current_epoch_ms}.txt"
 
       unless s3_bucket
         report.pretty_print(to_file: out)

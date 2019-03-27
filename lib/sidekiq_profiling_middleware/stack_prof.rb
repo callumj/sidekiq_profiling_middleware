@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "sidekiq_profiling_middleware/util"
 require "stackprof"
 
@@ -15,12 +16,18 @@ module SidekiqProfilingMiddleware
     end
 
     def call(worker, msg, queue)
+      job_class_name = worker.class
+
+      if job_class_name == ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper
+        job_class_name = msg["wrapped"].constantize
+      end
+
       # bail out if whitelist doesn't match
-      if only && !only.include?(worker.class)
+      if only && !only.include?(job_class_name)
         return yield
       end
 
-      out = "#{output_prefix}#{Util.worker_names[worker.class]}_#{Util.current_epoch_ms}.dump"
+      out = "#{output_prefix}#{Util.worker_names[job_class_name]}_#{Util.current_epoch_ms}.dump"
 
       unless s3_bucket
         ::StackProf.run(options.merge(out: out)) { yield }
