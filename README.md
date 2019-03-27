@@ -21,7 +21,7 @@ Sidekiq.configure_server do |config|
       SidekiqProfilingMiddleware::StackProf,
       only: [ThisReallySlowWorker].to_set,
       s3_bucket: "cj-profiling",
-      output_prefix: "stackprof/#{ENV["GIT_SHA]}_",
+      output_prefix: "stackprof/#{ENV["GIT_SHA"]}_",
     )
     # OR
     chain.add SidekiqProfilingMiddleware::StackProf, output_prefix: "tmp/#{Rails.env}_#{ENV["GIT_SHA"]}_"
