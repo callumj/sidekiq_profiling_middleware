@@ -7,9 +7,11 @@ Profile Sidekiq with StackProf & MemoryProfiler with optional support for S3 exp
 Two middleware classes are available:
 
 * `SidekiqProfilingMiddleware::StackProf`: requires [stackprof](https://github.com/tmm1/stackprof)
-* `SidekiqProfilingMiddleware::MemoryProfile`: requires [memory_profiler](https://github.com/SamSaffron/memory_profiler)
+* `SidekiqProfilingMiddleware::MemoryProfiler`: requires [memory_profiler](https://github.com/SamSaffron/memory_profiler)
 
 (You should only use one at a time, otherwise that will be quite confusing)
+
+### SidekiqProfilingMiddleware::StackProf
 
 ```ruby
 require "sidekiq_profiling_middleware/stack_prof"
@@ -21,10 +23,28 @@ Sidekiq.configure_server do |config|
       SidekiqProfilingMiddleware::StackProf,
       only: [ThisReallySlowWorker].to_set,
       s3_bucket: "cj-profiling",
-      output_prefix: "stackprof/#{ENV["GIT_SHA]}_",
+      output_prefix: "stackprof/#{ENV["GIT_SHA"]}_",
     )
     # OR
     chain.add SidekiqProfilingMiddleware::StackProf, output_prefix: "tmp/#{Rails.env}_#{ENV["GIT_SHA"]}_"
+  end
+end
+```
+
+### SidekiqProfilingMiddleware::MemoryProfiler
+
+```ruby
+require "sidekiq_profiling_middleware/memory_profiler"
+
+Sidekiq.configure_server do |config|
+  ....
+  config.server_middleware do |chain|
+    chain.add(
+      SidekiqProfilingMiddleware::MemoryProfiler,
+      only: [ThisReallySlowWorker].to_set,
+      s3_bucket: "cj-profiling",
+      output_prefix: "stackprof/#{ENV["GIT_SHA"]}_",
+    )
   end
 end
 ```
