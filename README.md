@@ -7,7 +7,7 @@ Profile Sidekiq with StackProf & MemoryProfiler with optional support for S3 exp
 Two middleware classes are available:
 
 * `SidekiqProfilingMiddleware::StackProf`: requires [stackprof](https://github.com/tmm1/stackprof)
-* `SidekiqProfilingMiddleware::MemoryProfile`: requires [memory_profiler](https://github.com/SamSaffron/memory_profiler)
+* `SidekiqProfilingMiddleware::MemoryProfiler`: requires [memory_profiler](https://github.com/SamSaffron/memory_profiler)
 
 (You should only use one at a time, otherwise that will be quite confusing)
 
